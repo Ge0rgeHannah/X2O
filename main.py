@@ -12,8 +12,7 @@ def run(args):
 
     # Build pipeline from module list
     pipeline: []
-    moduleFile = "home/george/Documents/GitHub/X2O/pipeline.json"
-    with open(moduleFile, "r") as m:
+    with open("pipeline.json", "r") as m:
         modules = json.load(m)
     for i in modules:
         print(i)
