@@ -1,21 +1,24 @@
 # General imports
 import argparse
 import json
-import importlib
 
 # Module imports
-# import elementExtract
-# import processComplexLabel
+import elementExtract
+import processComplexLabel
 
 
 def run(args):
 
     # Build pipeline from module list
-    pipeline: []
+    pipeline = []
     with open("pipeline.json", "r") as m:
-        modules = json.load(m)
+        modulesJSON = json.load(m)
+    modules = modulesJSON["modules"]
     for i in modules:
-        print(i)
+        item = {}
+        item[i["moduleName"]] = i["arguments"]
+        pipeline.append(item)
+
 
     schema = args.schema
 
