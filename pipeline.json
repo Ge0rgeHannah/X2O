@@ -1,0 +1,18 @@
+// For existing modules, parameters are detailed
+// in their respective moduleInfo.txt files
+{
+	"modules": [
+		{
+			"moduleName": "elementExtract",
+			"arguments": [
+				"schema"
+			],
+		},
+		{
+			"moduleName": "processComplexLabel",
+			"arguments": [
+				"conceptList"
+			],
+		},
+	]
+}
