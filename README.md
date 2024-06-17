@@ -34,7 +34,7 @@ X20
 |   main.py
 |   requirements.txt
 |   pipeline.json
-└---yourModule
+└───yourModule
 |   |   __init__.py
 |   |   yourModuleMethod.py
 ```
