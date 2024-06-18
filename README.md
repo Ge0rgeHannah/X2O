@@ -39,7 +39,12 @@ X20
 |   |   yourModuleMethod.py
 ```
 
-To allow your module to be used, add a line importing the module in `main.py`.
+To allow your module to be used, add a line importing the module in `main.py`. Following this, add a new block to the pipeline `if` statement. An example of this would be:
+
+```
+elif k == "moduleName":
+    output = moduleName(v)
+```
 
 To define the modules used in the pipeline, select a set of modules from the list below (Make sure to pay attention to the input and output of each module), and add these modules in order to `pipeline.json`.
 

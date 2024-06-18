@@ -3,11 +3,15 @@ import argparse
 import json
 
 # Module imports
-import elementExtract
-import processComplexLabel
+import elementExtract.elementExtract as elementExtract
+import processComplexLabel.processComplexLabel as processComplexLabel
 
 
 def run(args):
+
+    schema = args.schema
+    # Assign a default output that will cause an error if an invalid schema is provided
+    output = None
 
     # Build pipeline from module list
     pipeline = []
@@ -19,9 +23,13 @@ def run(args):
         item[i["moduleName"]] = i["arguments"]
         pipeline.append(item)
 
-
-    schema = args.schema
-
+    # Identify the correct stage in the pipeline and execute it
+    for i in pipeline:
+        for k, v in i.items():
+            if k == "elementExtract":
+                    output = elementExtract.elementExtract(schema)
+            elif k == "processComplexLabel":
+                output = processComplexLabel.processComplexLabel(output)
 
 # Handle and bind arguments
 def main():
