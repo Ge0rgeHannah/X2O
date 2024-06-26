@@ -36,73 +36,110 @@ def findPrefixes(root):
 
 
 def getComplexTypes(schema, xmlsPrefix):
-    ComplexTypesBasic = schema.getElementsByTagName(
+    complexTypesBasic = schema.getElementsByTagName(
         xmlsPrefix + ":complexType")
-    ComplexTypes = []
+    complexTypes = []
     seenComplexTypes = set()
 
-    for e in ComplexTypesBasic:
+    for e in complexTypesBasic:
         if e.hasAttribute("name"):
             name = e.getAttribute("name")
             if name not in seenComplexTypes:
                 seenComplexTypes.add(name)
-                ComplexTypes.append(e)
+                complexTypes.append(e)
 
     print("-- complexType elements --")
-    for i in ComplexTypes:
+    for i in complexTypes:
         print(i.getAttribute("name"))
+
+    return complexTypes
 
 
 def getSimpleTypes(schema, xmlsPrefix):
-    SimpleTypesBasic = schema.getElementsByTagName(xmlsPrefix + ":simpleType")
-    SimpleTypes = []
+    simpleTypesBasic = schema.getElementsByTagName(xmlsPrefix + ":simpleType")
+    simpleTypes = []
     seenSimpleTypes = set()
 
-    for e in SimpleTypesBasic:
+    for e in simpleTypesBasic:
         if e.hasAttribute("name"):
             name = e.getAttribute("name")
             if name not in seenSimpleTypes:
                 seenSimpleTypes.add(name)
-                SimpleTypes.append(e)
+                simpleTypes.append(e)
 
     print("-- simpleType elements --")
-    for i in SimpleTypes:
+    for i in simpleTypes:
         print(i.getAttribute("name"))
+
+    return simpleTypes
 
 
 def getAttributes(schema, xmlsPrefix):
-    AttributesBasic = schema.getElementsByTagName(xmlsPrefix + ":attribute")
-    Attributes = []
+    attributesBasic = schema.getElementsByTagName(xmlsPrefix + ":attribute")
+    attributes = []
     seenAttributes = set()
 
-    for e in AttributesBasic:
+    for e in attributesBasic:
         if e.hasAttribute("name"):
             name = e.getAttribute("name")
             if name not in seenAttributes:
                 seenAttributes.add(name)
-                Attributes.append(e)
+                attributes.append(e)
 
     print("-- attributes --")
-    for i in Attributes:
+    for i in attributes:
         print(i.getAttribute("name"))
+
+    return attributes
 
 
 def getAttributeGroups(schema, xmlsPrefix):
-    AttributeGroupsBasic = schema.getElementsByTagName(
+    attributeGroupsBasic = schema.getElementsByTagName(
         xmlsPrefix + ":attributeGroup")
-    AttributeGroups = []
+    attributeGroups = []
     seenAttributeGroups = set()
 
-    for e in AttributeGroupsBasic:
+    for e in attributeGroupsBasic:
         if e.hasAttribute("name"):
             name = e.getAttribute("name")
             if name not in seenAttributeGroups:
                 seenAttributeGroups.add(name)
-                AttributeGroups.append(e)
+                attributeGroups.append(e)
 
     print("-- attributeGroups --")
-    for i in AttributeGroups:
+    for i in attributeGroups:
         print(i.getAttribute("name"))
+
+    return attributeGroups
+
+
+# Identify concepts that are not currently checked for
+def collectUnknownElements(schema, conceptList, xmlsPrefix):
+    level2Elements = schema.childNodes
+
+    unknownElements = []
+
+    elementTypeList = []
+    for i in conceptList:
+        if i.tagName not in elementTypeList:
+            elementTypeList.append(i.tagName)
+
+    for e in level2Elements:
+        if e.nodeType == e.COMMENT_NODE:
+            continue
+        if e.tagName == (xmlsPrefix + ":element"):
+            continue
+        elif e.tagName in elementTypeList:
+            continue
+        else:
+            unknownElements.append(e)
+
+    # Print all unknown elements
+    print("-- Unknown Elements --")
+    for e in unknownElements:
+        if e.hasAttribute("name"):
+            print("Element: " + e.getAttribute("name") +
+                  ", of type: " + e.tagName)
 
 
 def elementExtract(schemaPath):
@@ -119,18 +156,21 @@ def elementExtract(schemaPath):
     xmlsPrefix = nsURIs["http://www.w3.org/2001/XMLSchema"]
 
     # Identify complexType elements
-    getComplexTypes(schema, xmlsPrefix)
+    complexTypes = getComplexTypes(schema, xmlsPrefix)
 
     # Identify simpleType elements
-    getSimpleTypes(schema, xmlsPrefix)
+    simpleTypes = getSimpleTypes(schema, xmlsPrefix)
 
     # Identify attribute elements
-    getAttributes(schema, xmlsPrefix)
+    attributes = getAttributes(schema, xmlsPrefix)
 
     # Identify attributeGroup elements
-    getAttributeGroups(schema, xmlsPrefix)
+    attributeGroups = getAttributeGroups(schema, xmlsPrefix)
+
+    knownConcepts = complexTypes + simpleTypes + attributes + attributeGroups
+    collectUnknownElements(schema, knownConcepts, xmlsPrefix)
 
 
 if __name__ == "__main__":
-    testSchemaPath = "../schemata/animl-core.xsd"
+    testSchemaPath = "../schemata/MINiML.xsd"
     elementExtract(testSchemaPath)
