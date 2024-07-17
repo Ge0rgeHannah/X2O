@@ -10,6 +10,16 @@ then run the command:
 
 `cd X2O`
 
+To complete the project structure run the following commands
+
+`mkdir output`
+
+`cd components`
+
+`mkdir APIs`
+
+`cd ..`
+
 ### Dependencies
 
 It is recommended that you create a virtual environment in python version 3.12.4
