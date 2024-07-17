@@ -1,7 +1,10 @@
-env/
+env/*
+!env/.gitkeep
 
-output/
+output/*
+!output/.gitkeep
 
-APIS/
+components/APIs/*
+!components/APIs/.gitkeep
 
 .python-version
