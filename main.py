@@ -27,9 +27,10 @@ def run(args):
     for i in pipeline:
         for k, v in i.items():
             if k == "elementExtract":
-                    output = elementExtract.elementExtract(schema)
+                output = elementExtract.elementExtract(schema)
             elif k == "processComplexLabel":
                 output = processComplexLabel.processComplexLabel(output)
+
 
 # Handle and bind arguments
 def main():

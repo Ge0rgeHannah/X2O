@@ -1,5 +1,8 @@
 import xml.dom.minidom as dom
 
+# Import classes
+from elementClasses import complexElement, simpleElement, tagAttribute, tagAttributeGroup
+
 
 # Generate prefix to namespace bindings
 def resolveNameSpace(element, prefix):
@@ -169,6 +172,9 @@ def elementExtract(schemaPath):
 
     knownConcepts = complexTypes + simpleTypes + attributes + attributeGroups
     collectUnknownElements(schema, knownConcepts, xmlsPrefix)
+
+    for i in knownConcepts:
+        element = complexElement()
 
 
 if __name__ == "__main__":

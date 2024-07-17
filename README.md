@@ -16,17 +16,21 @@ It is recommended that you create a virtual environment in python version 3.12.4
 To do this, install `pyenv` and `virtualenv` on your machine by running the commands
 
 For `pyenv`:
+
 `brew update`
+
 `brew install pyenv`
 
 *Replace `brew` with your package manager. (e.g. `apt`, `pacman`, `choco`, etc.)*
 
 For `virtualenv`
+
 `pip install virtualenv`
 
 To set the local python version run the following commands
 
 `pyenv install 3.12.4`
+
 `pyenv local 3.12.4`
 
 To check the local version of python
@@ -40,9 +44,11 @@ To set up the virtual environment
 To activate the virtual environment run the following command
 
 On Mac/Linux:
+
 `source env/bin/activate`
 
 On Windows:
+
 `. env/Scripts/activate`
 
 To install the required dependencies, run the following command:
