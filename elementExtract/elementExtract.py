@@ -144,6 +144,37 @@ def collectUnknownElements(schema, conceptList, xmlsPrefix):
             print("Element: " + e.getAttribute("name") +
                   ", of type: " + e.tagName)
 
+    return unknownElements
+
+# TODO: Add code to populate the other fields
+
+# Populate complexType objects
+def complexTypePopulation(element, ns):
+    conObj = complexElement()
+    conObj.name = element
+    return conObj
+
+
+# Populate simpleType objects
+def simpleTypePopulation(element, ns):
+    conObj = simpleElement()
+    conObj.name = element
+    return conObj
+
+
+# Populate attribute objects
+def attributePopulation(element, ns):
+    conObj = tagAttribute()
+    conObj.name = element
+    return conObj
+
+
+# Populate attributeGroup objects
+def attributeGroupPopulation(element, ns):
+    conObj = tagAttributeGroup()
+    conObj.name = element
+    return conObj
+
 
 def elementExtract(schemaPath):
     schema = dom.parse(schemaPath)
@@ -170,13 +201,42 @@ def elementExtract(schemaPath):
     # Identify attributeGroup elements
     attributeGroups = getAttributeGroups(schema, xmlsPrefix)
 
+    # Identify elements that don't fit into the above types
     knownConcepts = complexTypes + simpleTypes + attributes + attributeGroups
-    collectUnknownElements(schema, knownConcepts, xmlsPrefix)
+    edgeCases = collectUnknownElements(schema, knownConcepts, xmlsPrefix)
 
-    for i in knownConcepts:
-        element = complexElement()
+    # TODO: Implement some way of handeling the edge case elements 
+    # (allowing the user to either ignore the elements, consider them as one 
+    # of the other element types, or crash the program)
+
+    # Generate the appropriate object for each concept
+    elements = []
+
+    # complexTypes
+    for i in complexTypes:
+        newComplexType = None
+        newComplexType = complexTypePopulation(i, xmlsPrefix)
+        elements.append(newComplexType)
+
+    # simpleTypes
+    for i in simpleTypes:
+        newSimpleType = None
+        newSimpleType = simpleTypePopulation(i, xmlsPrefix)
+        elements.append(newSimpleType)
+
+    # attributes
+    for i in attributes:
+        newAttribute = None
+        newAttribute = attributePopulation(i, xmlsPrefix)
+        elements.append(newAttribute)
+
+    # attributeGroups
+    for i in attributeGroups:
+        newAttributeGroup = None
+        newAttributeGroup = attributeGroupPopulation(i, xmlsPrefix)
+        elements.append(newAttributeGroup)
 
 
 if __name__ == "__main__":
-    testSchemaPath = "../schemata/MINiML.xsd"
+    testSchemaPath = "schemata/MINiML.xsd"
     elementExtract(testSchemaPath)
