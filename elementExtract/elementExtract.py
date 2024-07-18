@@ -168,6 +168,8 @@ def complexTypePopulation(element, schema, ns):
     for i in allElements:
         if i.getAttribute("type") == element:
             targetElement = i
+    if targetElement is None:
+        raise Exception("No root element found")
 
     # Get Name
     conObj.name = targetElement.getAttribute("name")
@@ -190,10 +192,35 @@ def complexTypePopulation(element, schema, ns):
                         conObj.description = getNodeText(j)
 
     # Get attributeGroups
+    for i in element:
+        if i.getElementsByTagName(ns + ":attributeGroup"):
+
+            # Handle references
+            if i.hasAttribute("ref"):
+                conObj.attributeGroups.append(i.getAttribute("ref"))
+
+            # Handle defined attributeGroups
+            elif i.hasAttribute("name"):
+                conObj.attributeGroups.append(i.getAttribute("name"))
 
     # Get attributes
+    for i in element:
+        if i.getElementsByTagName(ns + ":attribute"):
+            conObj.attributes.append(i.getAttribute("name"))
 
     # Get children
+    for i in element:
+        if i.getElementsByTagName(ns + ":sequence"):
+            for j in i:
+                if j.getElementsByTagName(ns + ":element"):
+
+                    # Handle references
+                    if j.hasAttribute("ref"):
+                        conObj.children.append(j.getAttribute("ref"))
+
+                    # Handle defined elements
+                    if j.hasAttribute("name"):
+                        conObj.children.append(j.getAttribute("name"))
 
     return conObj
 
@@ -208,6 +235,8 @@ def simpleTypePopulation(element, schema, ns):
     for i in allElements:
         if i.getAttribute("type") == element:
             targetElement = i
+    if targetElement is None:
+        raise Exception("No root element found")
 
     # Get Name
     conObj.name = targetElement.getAttribute("name")
