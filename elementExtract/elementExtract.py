@@ -4,6 +4,15 @@ import xml.dom.minidom as dom
 from elementClasses import complexElement, simpleElement, tagAttribute, tagAttributeGroup
 
 
+# Get text content from a node
+def getNodeText(node):
+    text = []
+    for i in node.childNodes:
+        if i.nodeType == i.TEXT_NODE:
+            text.append(i.data)
+    return "".join(text)
+
+
 # Generate prefix to namespace bindings
 def resolveNameSpace(element, prefix):
     ns = None
@@ -148,17 +157,80 @@ def collectUnknownElements(schema, conceptList, xmlsPrefix):
 
 # TODO: Add code to populate the other fields
 
+
 # Populate complexType objects
-def complexTypePopulation(element, ns):
+def complexTypePopulation(element, schema, ns):
     conObj = complexElement()
-    conObj.name = element
+
+    # Identify the root of the element
+    allElements = schema.getElementsByTagName(ns + ":element")
+    targetElement = None
+    for i in allElements:
+        if i.getAttribute("type") == element:
+            targetElement = i
+
+    # Get Name
+    conObj.name = targetElement.getAttribute("name")
+
+    # Get Description
+
+    # Check in root element
+    for i in targetElement:
+        if i.getElementsByTagName(ns + ":annotation"):
+            for j in i:
+                if j.getElementsByTagName(ns + ":documentation"):
+                    conObj.description = getNodeText(j)
+
+    # Check in type definition
+    if conObj.description == "":
+        for i in element:
+            if i.getElementsByTagName(ns + ":annotation"):
+                for j in i:
+                    if j.getElementsByTagName(ns + ":documentation"):
+                        conObj.description = getNodeText(j)
+
+    # Get attributeGroups
+
+    # Get attributes
+
+    # Get children
+
     return conObj
 
 
 # Populate simpleType objects
-def simpleTypePopulation(element, ns):
+def simpleTypePopulation(element, schema, ns):
     conObj = simpleElement()
-    conObj.name = element
+
+    # Identify the root of the element
+    allElements = schema.getElementsByTagName(ns + ":element")
+    targetElement = None
+    for i in allElements:
+        if i.getAttribute("type") == element:
+            targetElement = i
+
+    # Get Name
+    conObj.name = targetElement.getAttribute("name")
+
+    # Get Description
+
+    # Check in root element
+    for i in targetElement:
+        if i.getElementsByTagName(ns + ":annotation"):
+            for j in i:
+                if j.getElementsByTagName(ns + ":documentation"):
+                    conObj.description = getNodeText(j)
+
+    # Check in type definition
+    if conObj.description == "":
+        for i in element:
+            if i.getElementsByTagName(ns + ":annotation"):
+                for j in i:
+                    if j.getElementsByTagName(ns + ":documentation"):
+                        conObj.description = getNodeText(j)
+
+    # Get Datatype
+
     return conObj
 
 
@@ -205,8 +277,8 @@ def elementExtract(schemaPath):
     knownConcepts = complexTypes + simpleTypes + attributes + attributeGroups
     edgeCases = collectUnknownElements(schema, knownConcepts, xmlsPrefix)
 
-    # TODO: Implement some way of handeling the edge case elements 
-    # (allowing the user to either ignore the elements, consider them as one 
+    # TODO: Implement some way of handeling the edge case elements
+    # (allowing the user to either ignore the elements, consider them as one
     # of the other element types, or crash the program)
 
     # Generate the appropriate object for each concept
@@ -215,13 +287,13 @@ def elementExtract(schemaPath):
     # complexTypes
     for i in complexTypes:
         newComplexType = None
-        newComplexType = complexTypePopulation(i, xmlsPrefix)
+        newComplexType = complexTypePopulation(i, schema, xmlsPrefix)
         elements.append(newComplexType)
 
     # simpleTypes
     for i in simpleTypes:
         newSimpleType = None
-        newSimpleType = simpleTypePopulation(i, xmlsPrefix)
+        newSimpleType = simpleTypePopulation(i, schema, xmlsPrefix)
         elements.append(newSimpleType)
 
     # attributes
@@ -238,5 +310,5 @@ def elementExtract(schemaPath):
 
 
 if __name__ == "__main__":
-    testSchemaPath = "schemata/MINiML.xsd"
+    testSchemaPath = "schemata/animl-core.xsd"
     elementExtract(testSchemaPath)
