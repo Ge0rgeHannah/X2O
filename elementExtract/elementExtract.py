@@ -259,6 +259,10 @@ def simpleTypePopulation(element, schema, ns):
                         conObj.description = getNodeText(j)
 
     # Get Datatype
+    for i in element:
+        if i.getElementsByTagName(ns + ":restriction"):
+            if i.hasAttribute("base"):
+                conObj.datatype = i.getAttribute("base")
 
     return conObj
 
