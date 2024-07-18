@@ -166,33 +166,50 @@ def complexTypePopulation(element, schema, ns):
     allElements = schema.getElementsByTagName(ns + ":element")
     targetElement = None
     for i in allElements:
-        if i.getAttribute("type") == element:
+        if i.getAttribute("type") == element.getAttribute("name"):
             targetElement = i
-    if targetElement is None:
-        raise Exception("No root element found")
+    # if targetElement is None:
+    #    raise Exception("No root element found for: " +
+    #                    element.getAttribute("name"))
 
     # Get Name
-    conObj.name = targetElement.getAttribute("name")
+    try:
+        conObj.name = targetElement.getAttribute("name")
+    except Exception:
+        conObj.name = element.getAttribute("name")
 
     # Get Description
 
-    # Check in root element
-    for i in targetElement:
+    # Check in type definition
+    for i in element.childNodes:
+        if i.nodeType == i.TEXT_NODE:
+            continue
         if i.getElementsByTagName(ns + ":annotation"):
-            for j in i:
+            for j in i.childNodes:
+                if j.nodeType == j.TEXT_NODE:
+                    continue
                 if j.getElementsByTagName(ns + ":documentation"):
                     conObj.description = getNodeText(j)
 
-    # Check in type definition
+    # Check in root element
     if conObj.description == "":
-        for i in element:
-            if i.getElementsByTagName(ns + ":annotation"):
-                for j in i:
-                    if j.getElementsByTagName(ns + ":documentation"):
-                        conObj.description = getNodeText(j)
+        try:
+            for i in targetElement.childNodes:
+                if i.nodeType == i.TEXT_NODE:
+                    continue
+                if i.getElementsByTagName(ns + ":annotation"):
+                    for j in i.childNodes:
+                        if j.nodeType == i.TEXT_NODE:
+                            continue
+                        if j.getElementsByTagName(ns + ":documentation"):
+                            conObj.description = getNodeText(j)
+        except Exception:
+            pass
 
     # Get attributeGroups
-    for i in element:
+    for i in element.childNodes:
+        if i.nodeType == i.TEXT_NODE:
+            continue
         if i.getElementsByTagName(ns + ":attributeGroup"):
 
             # Handle references
@@ -204,14 +221,20 @@ def complexTypePopulation(element, schema, ns):
                 conObj.attributeGroups.append(i.getAttribute("name"))
 
     # Get attributes
-    for i in element:
+    for i in element.childNodes:
+        if i.nodeType == i.TEXT_NODE:
+            continue
         if i.getElementsByTagName(ns + ":attribute"):
             conObj.attributes.append(i.getAttribute("name"))
 
     # Get children
-    for i in element:
+    for i in element.childNodes:
+        if i.nodeType == i.TEXT_NODE:
+            continue
         if i.getElementsByTagName(ns + ":sequence"):
-            for j in i:
+            for j in i.childNodes:
+                if j.nodeType == j.TEXT_NODE:
+                    continue
                 if j.getElementsByTagName(ns + ":element"):
 
                     # Handle references
@@ -235,31 +258,46 @@ def simpleTypePopulation(element, schema, ns):
     for i in allElements:
         if i.getAttribute("type") == element:
             targetElement = i
-    if targetElement is None:
-        raise Exception("No root element found")
+    # if targetElement is None:
+    #    raise Exception("No root element found for: " +
+    #                    element.getAttribute("name"))
 
     # Get Name
-    conObj.name = targetElement.getAttribute("name")
+    try:
+        conObj.name = targetElement.getAttribute("name")
+    except Exception:
+        conObj.name = element.getAttribute("name")
 
     # Get Description
 
-    # Check in root element
-    for i in targetElement:
+    # Check in type definition
+    for i in element.childNodes:
+        if i.nodeType == i.TEXT_NODE:
+            continue
         if i.getElementsByTagName(ns + ":annotation"):
-            for j in i:
+            for j in i.childNodes:
+                if j.nodeType == j.TEXT_NODE:
+                    continue
                 if j.getElementsByTagName(ns + ":documentation"):
                     conObj.description = getNodeText(j)
 
-    # Check in type definition
-    if conObj.description == "":
-        for i in element:
-            if i.getElementsByTagName(ns + ":annotation"):
-                for j in i:
-                    if j.getElementsByTagName(ns + ":documentation"):
-                        conObj.description = getNodeText(j)
+    # Check in root element
+    try:
+        if conObj.description == "":
+            for i in targetElement.childNodes:
+                if i.nodeType == i.TEXT_NODE:
+                    continue
+                if i.getElementsByTagName(ns + ":annotation"):
+                    for j in i:
+                        if j.getElementsByTagName(ns + ":documentation"):
+                            conObj.description = getNodeText(j)
+    except Exception:
+        pass
 
     # Get Datatype
-    for i in element:
+    for i in element.childNodes:
+        if i.nodeType == i.TEXT_NODE:
+            continue
         if i.getElementsByTagName(ns + ":restriction"):
             if i.hasAttribute("base"):
                 conObj.datatype = i.getAttribute("base")
@@ -268,16 +306,30 @@ def simpleTypePopulation(element, schema, ns):
 
 
 # Populate attribute objects
-def attributePopulation(element, ns):
+def attributePopulation(element, schema, ns):
     conObj = tagAttribute()
+
+    # Get Name
     conObj.name = element
+
+    # Get Description
+
+    # Get Datatype
+
     return conObj
 
 
 # Populate attributeGroup objects
-def attributeGroupPopulation(element, ns):
+def attributeGroupPopulation(element, schema, ns):
     conObj = tagAttributeGroup()
+
+    # Get Name
     conObj.name = element
+
+    # Get Description
+
+    # Get Datatype
+
     return conObj
 
 
@@ -332,13 +384,13 @@ def elementExtract(schemaPath):
     # attributes
     for i in attributes:
         newAttribute = None
-        newAttribute = attributePopulation(i, xmlsPrefix)
+        newAttribute = attributePopulation(i, schema, xmlsPrefix)
         elements.append(newAttribute)
 
     # attributeGroups
     for i in attributeGroups:
         newAttributeGroup = None
-        newAttributeGroup = attributeGroupPopulation(i, xmlsPrefix)
+        newAttributeGroup = attributeGroupPopulation(i, schema, xmlsPrefix)
         elements.append(newAttributeGroup)
 
 
