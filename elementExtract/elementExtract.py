@@ -288,7 +288,9 @@ def simpleTypePopulation(element, schema, ns):
                 if i.nodeType == i.TEXT_NODE:
                     continue
                 if i.getElementsByTagName(ns + ":annotation"):
-                    for j in i:
+                    for j in i.childNodes:
+                        if i.nodeType == i.TEXT_NODE:
+                            continue
                         if j.getElementsByTagName(ns + ":documentation"):
                             conObj.description = getNodeText(j)
     except Exception:
@@ -310,11 +312,21 @@ def attributePopulation(element, schema, ns):
     conObj = tagAttribute()
 
     # Get Name
-    conObj.name = element
+    conObj.name = element.getAttribute("name")
 
     # Get Description
+    for i in element.childNodes:
+        if i.nodeType == i.TEXT_NODE:
+            continue
+        if i.getElementsByTagName(ns + ":annotation"):
+            for j in i.childNodes:
+                if j.nodeType == i.TEXT_NODE:
+                    continue
+                if j.getElementsByTagName(ns + ":documentation"):
+                    conObj.description = getNodeText(j)
 
     # Get Datatype
+    conObj.datatype = element.getAttribute("type")
 
     return conObj
 
