@@ -20,7 +20,10 @@ def run(args):
     modules = modulesJSON["modules"]
     for i in modules:
         item = {}
-        item[i["moduleName"]] = i["arguments"]
+        try:
+            item[i["moduleName"]] = i["arguments"]
+        except Exception:
+            item[i["moduleName"]] = ""
         pipeline.append(item)
 
     # Identify the correct stage in the pipeline and execute it

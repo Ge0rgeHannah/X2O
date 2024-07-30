@@ -1,7 +1,7 @@
 import xml.dom.minidom as dom
 
 # Import classes
-from elementClasses import complexElement, simpleElement, tagAttribute, tagAttributeGroup
+from elementExtract.elementClasses import complexElement, simpleElement, tagAttribute, tagAttributeGroup
 
 
 # Get text content from a node
@@ -155,7 +155,7 @@ def collectUnknownElements(schema, conceptList, xmlsPrefix):
 
     return unknownElements
 
-# TODO: Add code to populate the other fields
+# TODO: Add code to capture more complex schema elements (e.g. restrictions)
 
 
 # Populate complexType objects
@@ -391,6 +391,8 @@ def attributeGroupPopulation(element, schema, ns):
 
 
 def elementExtract(schemaPath):
+    schemaPath = "schemata/" + schemaPath
+
     schema = dom.parse(schemaPath)
 
     root = schema.documentElement
@@ -452,5 +454,5 @@ def elementExtract(schemaPath):
 
 
 if __name__ == "__main__":
-    testSchemaPath = "schemata/animl-core.xsd"
+    testSchemaPath = "animl-core.xsd"
     elementExtract(testSchemaPath)
