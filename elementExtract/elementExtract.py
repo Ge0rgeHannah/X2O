@@ -335,12 +335,57 @@ def attributePopulation(element, schema, ns):
 def attributeGroupPopulation(element, schema, ns):
     conObj = tagAttributeGroup()
 
+    # Identify the root of the element
+    allElements = schema.getElementsByTagName(ns + ":element")
+    targetElement = None
+    for i in allElements:
+        if i.getAttribute("type") == element:
+            targetElement = i
+    # if targetElement is None:
+    #    raise Exception("No root element found for: " +
+    #                    element.getAttribute("name"))
+
     # Get Name
-    conObj.name = element
+    try:
+        conObj.name = targetElement.getAttribute("name")
+    except Exception:
+        conObj.name = element.getAttribute("name")
+    conObj.name = element.getAttribute("name")
 
     # Get Description
 
-    # Get Datatype
+    # Check in type definition
+    for i in element.childNodes:
+        if i.nodeType == i.TEXT_NODE:
+            continue
+        if i.getElementsByTagName(ns + ":annotation"):
+            for j in i.childNodes:
+                if j.nodeType == j.TEXT_NODE:
+                    continue
+                if j.getElementsByTagName(ns + ":documentation"):
+                    conObj.description = getNodeText(j)
+
+    # Check in root element
+    if conObj.description == "":
+        try:
+            for i in targetElement.childNodes:
+                if i.nodeType == i.TEXT_NODE:
+                    continue
+                if i.getElementsByTagName(ns + ":annotation"):
+                    for j in i.childNodes:
+                        if j.nodeType == i.TEXT_NODE:
+                            continue
+                        if j.getElementsByTagName(ns + ":documentation"):
+                            conObj.description = getNodeText(j)
+        except Exception:
+            pass
+
+    # Get Attributes
+    for i in element.childNodes:
+        if i.nodeType == i.TEXT_NODE:
+            continue
+        if i.getElementsByTagName(ns + ":attribute"):
+            conObj.attributes.append(i.getAttribute("name"))
 
     return conObj
 
