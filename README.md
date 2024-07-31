@@ -99,7 +99,8 @@ To define the modules used in the pipeline, select a set of modules from the lis
 
 | Module Name | Description | Input | Output |
 | ----------- | ----------- | ----- | ------ |
-| XSD element ectractor | Identifies all elements and attributes in an XSD file and represents these concepts and their relations in an object stored in a list | XSD file | List of Element Objects |
+| `elementExtract` | Identifies all elements and attributes in an XSD file and represents these concepts and their relations in an object stored in a list | XSD file | List of Element Objects |
+| `processComplexLabel` | Splits CamelCase labels into an array of the individual tokens paired with the original labels | List of Element Objects | List of Element Objects |
 | x | y | z | a |
 
 ## Project Structure

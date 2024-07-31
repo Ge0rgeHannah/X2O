@@ -4,7 +4,7 @@
 			"moduleName": "elementExtract"
 		},
 		{
-			"moduleName": "processComplexLabel",
+			"moduleName": "processComplexLabel"
 		},
 		{
 			"moduleName": "OWLTaxonomy",

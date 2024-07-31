@@ -452,6 +452,8 @@ def elementExtract(schemaPath):
         newAttributeGroup = attributeGroupPopulation(i, schema, xmlsPrefix)
         elements.append(newAttributeGroup)
 
+    return (elements)
+
 
 if __name__ == "__main__":
     testSchemaPath = "animl-core.xsd"
