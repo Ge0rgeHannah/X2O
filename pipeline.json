@@ -5,8 +5,11 @@
 		},
 		{
 			"moduleName": "processComplexLabel",
+		},
+		{
+			"moduleName": "OWLTaxonomy",
 			"arguments": [
-				"conceptList"
+				"placeholder"
 			]
 		}
 	]
