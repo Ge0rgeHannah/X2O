@@ -1,4 +1,4 @@
-# X2O: XSD to Ontology
+# X2O: XSD to Ontology -> (UNFINISHED)
 A modular XSD to RDF translation pipeline
 
 ## Quickstart
